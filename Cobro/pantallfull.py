@@ -3,9 +3,9 @@ from datetime import datetime, date
 from tkinter import messagebox as mb
 from tkinter import *
 import tkinter as tk
-import operacion
-#import subprocess
- 
+from Cobro import operacion
+import subprocess
+from Cobro import cobroFO
 
 class Fullscreen_Example:
     def __init__(self):
@@ -77,8 +77,7 @@ class Fullscreen_Example:
                    self.operacion1.ActuaizaUsuario(actual)
                    ##Cerrar la ventana
                    self.quitF()
-                   from cobroFO import FormularioOperacion       
-                   FormularioOperacion()
+                   cobroFO.FormularioOperacion()      
                    
 
                 else:

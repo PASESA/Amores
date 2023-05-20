@@ -12,7 +12,7 @@ from tkinter import scrolledtext as st
 from tkinter import font
 from tkinter import simpledialog
 import re
-import operacion
+from Cobro import operacion
 import time
 from PIL import ImageTk, Image
 #import 
@@ -106,9 +106,9 @@ class FormularioOperacion:
 		p.text('Entro: '+horaentrada+'\n')
 		p.text('Placas '+placa+'\n')
 		p.set(align="left")
-		p.image("LOGO1.jpg")
+		p.image("img\LOGO1.jpg")
 		p.cut()
-		p.image("LOGO1.jpg")
+		p.image("img\LOGO1.jpg")
 		p.text("--------------------------------------\n")
 		p.set(align="center")
 		p.text("BOLETO DE ENTRADA\n")
@@ -116,7 +116,7 @@ class FormularioOperacion:
 		p.text('Entro: '+horaentrada+'\n')
 		p.text('Placas '+placa+'\n')
 		p.text(folioZZ+'\n')
-		p.image("AutoA.png")
+		p.image("img\AutoA.png")
 		p.set(align = "center")
 		p.image("reducida.png")
 		p.text("            Le Atiende:               \n")
@@ -332,7 +332,7 @@ class FormularioOperacion:
 			folio = self.operacion1.descifrar_folio(folio_cifrado = datos)
 			self.folio.set(folio)
 
-			print(f"\nFolio descifrado: {folio}")
+			#p.text(f"\nFolio descifrado: {folio}")
 
 			respuesta=self.operacion1.consulta(folio)
 			if len(respuesta)>0:
@@ -386,6 +386,7 @@ class FormularioOperacion:
 			horas_dentro, segundos_vividos = divmod(segundos_vividos, 3600)
 			self.label12.configure(text=(horas_dentro, "horas"))
 			minutos_dentro, segundos_vividos = divmod(segundos_vividos, 60)
+			minutos_dentro = minutos_dentro + 1
 			self.label7.configure(text=(minutos_dentro, "minutos"))
 			#calcular la diferencia de segundos
 			seg1 = ffeecha.seconds
@@ -450,7 +451,7 @@ class FormularioOperacion:
 		f = open("reducida.png", "wb")
 		img.save(f)
 		f.close()
-		p.image("LOGO1.jpg")
+		p.image("img\LOGO1.jpg")
 		#Compro de comprobante
 		p.set('left')
 		ImporteCompro=str(self.importe.get(),)
@@ -916,12 +917,12 @@ class FormularioOperacion:
 			usuario1 = fila[4]
 		hoy = str(datetime.today())
 		hoy1=hoy[:20]
-		#print(hoy1)
+
 		datos=(hoy1, cajero1)
 		self.operacion1.Cierreusuario(datos)
 		dato=(cajero1)
 		self.operacion1.NoAplicausuario(dato)
-		#print(str(cajero))         
+
 		##la fecha final de este corte que es la actual
 		fechaDECorte = str(self.FechaCorte.get(),)
 		fechaDECorte = datetime.strptime(fechaDECorte, '%Y-%m-%d %H:%M:%S' )
@@ -1079,7 +1080,7 @@ class FormularioOperacion:
 						worksheet = workbook.add_worksheet('CORTE')
 						#Definimos Encabezado Principal
 						#Obtnemos imagen del Encabezado
-						worksheet.insert_image('A1', '/media/pi/rootfs/home/pi/Documents/Cobro/LOGO.jpg',{'x_scale': 0.85, 'y_scale': 0.85}) #Insert de Logo (imagen.png)
+						worksheet.insert_image('A1', 'img\LOGO.jpg',{'x_scale': 0.85, 'y_scale': 0.85}) #Insert de Logo (imagen.png)
 						cell_format0 = workbook.add_format()
 						cell_format0 = workbook.add_format({'align':'right','bold': True})
 						cell_format3 = workbook.add_format()
@@ -1218,4 +1219,4 @@ class FormularioOperacion:
 			self.folio.set("")
 			self.entryfolio.focus()
 
-aplicacion1=FormularioOperacion()
+#aplicacion1=FormularioOperacion()

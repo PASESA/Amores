@@ -8,8 +8,8 @@ class Operacion:
 	def abrir(self):
 		conexion=pymysql.connect(host="localhost",
 								 user="root",
-								 passwd="RG980320",
-								 database="Parqueadero1")
+								 passwd="",
+								 database="db_pn")
 
 		return conexion
 
@@ -309,9 +309,6 @@ class Operacion:
 		# Concatena el número de seguridad al número de folio.
 		folio = folio + numero_seguridad
 
-		# Imprime el número de folio cifrado (sólo para propósitos de depuración).
-		print(folio)
-
 		# Tabla de sustitución numérica.
 		tabla = {'0': '5', '1': '3', '2': '9', '3': '1', '4': '7', '5': '0', '6': '8', '7': '4', '8': '6', '9': '2'}
 
@@ -323,6 +320,8 @@ class Operacion:
 
 		# Convierte la lista cifrada de vuelta a una cadena de texto.
 		cifrado = ''.join(cifrado)
+
+		print(cifrado)
 
 		# Devuelve el número de folio cifrado.
 		return cifrado
