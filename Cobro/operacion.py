@@ -370,11 +370,13 @@ class Operacion:
 
 		# Maneja el error si el formato del número de folio es incorrecto.
 		except TypeError as error:
+			print(error)
 			mb.showerror("Error", f"El folio tiene un formato incorrecto, si el error persiste contacte a un administrador y muestre el siguiente error:\n{error}")
 			return None
 
 		# Maneja cualquier otro error que pueda ocurrir al descifrar el número de folio.
 		except Exception as error:
+			print(error)
 			mb.showerror("Error", f"Ha ocurrido un error al descifrar el folio, intente nuevamente, si el error persiste contacte a un administrador y muestre el siguiente error:\n{error}")
 			return None
 

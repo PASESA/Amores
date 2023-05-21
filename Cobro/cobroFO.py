@@ -12,7 +12,8 @@ from tkinter import scrolledtext as st
 from tkinter import font
 from tkinter import simpledialog
 import re
-from Cobro import operacion
+#from Cobro
+import operacion
 import time
 from PIL import ImageTk, Image
 #import 
@@ -69,7 +70,7 @@ class FormularioOperacion:
 		self.boton1.grid(column=1, row=4, padx=4, pady=4)
 		self.Autdentro=tk.Button(self.Adentroframe, text="Boletos sin Cobro", command=self.Autdentro, width=15, height=1, anchor="center")
 		self.Autdentro.grid(column=2, row=0, padx=4, pady=4)
-		self.boton2=tk.Button(self.pagina1, text="Salir del programa", command=quit, width=15, height=1, anchor="center", background="red")
+		self.boton2=tk.Button(self.pagina1, text="Salir del programa", command=self.Cerrar_Programa, width=15, height=1, anchor="center", background="red")
 		self.boton2.grid(column=0, row=0, padx=4, pady=4)
 	def Autdentro(self):
 		respuesta=self.operacion1.Autos_dentro()
@@ -297,7 +298,7 @@ class FormularioOperacion:
 			self.label9.configure(text =(importe, "cobro"))
 			self.PrTi.set("Per")
 			self.Comprobante()
-			###-###p = Usb(0x04b8, 0x0202, 0)
+			##p = Usb(0x04b8, 0x0202, 0)
 			#p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
 			p.text('Boleto Perdido\n')
 			FoliodelPerdido = str(self.PonerFOLIO.get(),)
@@ -310,7 +311,7 @@ class FormularioOperacion:
 			p.set('Big line\n', font='b')
 			p.text('Fecha: '+horaNota+'\n')
 			EntradaCompro = str(self.descripcion.get(),)
-			p.text('El auto entro: '+SalioCompro[:-3]+'\n')
+			p.text('El auto entro: '+EntradaCompro[:-3]+'\n')
 			SalioCompro = str(self.copia.get(),)
 			p.text('El auto salio: '+SalioCompro[:-3]+'\n')
 			self.GuardarCobro()
@@ -325,14 +326,14 @@ class FormularioOperacion:
 	def consultar(self,event):
 		global ban
 		ban = 0
-		datos=str(self.folio.get())
+		datos=self.folio.get()
 
 		if len(datos) < 20:#con esto revisamos si lee el folio o la promocion
 
 			folio = self.operacion1.descifrar_folio(folio_cifrado = datos)
 			self.folio.set(folio)
 
-			#p.text(f"\nFolio descifrado: {folio}")
+			print(f"\nFolio descifrado: {folio}")
 
 			respuesta=self.operacion1.consulta(folio)
 			if len(respuesta)>0:
@@ -373,6 +374,7 @@ class FormularioOperacion:
 			self.PrTi.set("Normal")
 			self.label15.configure(text="Lo puedes COBRAR")
 			fecha = datetime.today()
+			fecha = fecha + timedelta(minutes=1)
 			fecha1= fecha.strftime("%Y-%m-%d %H:%M:%S")
 			fechaActual= datetime.strptime(fecha1, '%Y-%m-%d %H:%M:%S')
 			self.copia.set(fechaActual)
@@ -412,9 +414,11 @@ class FormularioOperacion:
 				#self.elimportees.set(importe)
 				self.label9.configure(text =(importe, "cobro"))
 				self.entrypromo.focus()
+				self.IImporte.config(text=self.importe.get())
 			else:
 				importe = ((ffeecha.days)*250 + (horas_dentro * 28)+(minutos)*7)
 				self.importe.set(importe)
+				self.IImporte.config(text=self.importe.get())
 				self.label9.configure(text =(importe, "Cobrar"))
 				self.entrypromo.focus()      
 
@@ -457,7 +461,7 @@ class FormularioOperacion:
 		ImporteCompro=str(self.importe.get(),)
 		p.text("El importe es $"+ImporteCompro+"\n")
 		EntradaCompro = str(self.descripcion.get(),)
-		p.text('El auto entro: '+SalioCompro[:-3]+'\n')
+		p.text('El auto entro: '+EntradaCompro[:-3]+'\n')
 		SalioCompro = str(self.copia.get(),)
 		p.text('El auto salio: '+SalioCompro[:-3]+'\n')
 		TiempoCompro = str(self.ffeecha.get(),)
@@ -473,7 +477,7 @@ class FormularioOperacion:
 		p.text('           CONTRA \n')        
 		p.text("El importe es $"+ImporteCompro+"\n")
 		EntradaCompro = str(self.descripcion.get(),)
-		p.text('El auto entro: '+SalioCompro[:-3]+'\n')
+		p.text('El auto entro: '+EntradaCompro[:-3]+'\n')
 		SalioCompro = str(self.copia.get(),)
 		p.text('El auto salio: '+SalioCompro[:-3]+'\n')
 		TiempoCompro = str(self.ffeecha.get(),)
@@ -779,7 +783,7 @@ class FormularioOperacion:
 
 		respuesta=self.operacion1.desglose_cobrados(Numcorte)
 		self.scrolledtxt2.delete("1.0", tk.END)
-		###-###p = Usb(0x04b8, 0x0202, 0)
+		##p = Usb(0x04b8, 0x0202, 0)
 		#p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
 		p.text("El Numero de corte es "+Numcorte+'\n')
 		for fila in respuesta:
@@ -827,7 +831,7 @@ class FormularioOperacion:
 			self.label9.configure(text =(importe, "cobro"))
 			self.PrTi.set("CDO")
 			self.promo.set("")
-			###-###p = Usb(0x04b8, 0x0202, 0)
+			##p = Usb(0x04b8, 0x0202, 0)
 			#p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
 			p.text('Boleto Cancelado\n')
 			FoliodelCancelado = str(self.FolioCancelado.get(),)
@@ -840,7 +844,7 @@ class FormularioOperacion:
 			p.set('Big line\n', font='b')
 			p.text('Fecha: '+horaNota+'\n')
 			EntradaCompro = str(self.descripcion.get(),)
-			p.text('El auto entro: '+SalioCompro[:-3]+'\n')
+			p.text('El auto entro: '+EntradaCompro[:-3]+'\n')
 			SalioCompro = str(self.copia.get(),)
 			p.text('El auto salio: '+SalioCompro[:-3]+'\n')
 			self.GuardarCobro()
@@ -862,7 +866,7 @@ class FormularioOperacion:
 		#respuesta=str(respuesta)
 		for fila in respuesta:
 			self.scrolledtext1.insert(tk.END, "Entrada num: "+str(fila[0])+"\nEntro: "+str(fila[1])+"\nSalio: "+str(fila[2])+"\nImporte: "+str(fila[3])+"\n\n")
-			###-###p = Usb(0x04b8, 0x0202, 0)
+			##p = Usb(0x04b8, 0x0202, 0)
 			#p = Usb(0x04b8, 0x0e15, 0)#esta es la impresora con sus valores que se obtienen con lsusb
 			p.text('Entrada Num :')
 			p.text(str(fila[0]))
