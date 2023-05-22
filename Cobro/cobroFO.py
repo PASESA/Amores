@@ -92,7 +92,8 @@ class FormularioOperacion:
 		fechaEntro = datetime.today()
 		horaentrada = str(fechaEntro)
 		horaentrada=horaentrada[:19]
-		self.labelhr.configure(text=(horaentrada, "Entró"))
+		nueva_fecha = horaentrada[:-3]
+		self.labelhr.configure(text=(nueva_fecha, "Entró"))
 		corteNum = 0
 		placa=str(self.Placa.get(), )
 		datos=(fechaEntro, corteNum, placa)
@@ -101,24 +102,21 @@ class FormularioOperacion:
 		self.operacion1.generar_QR(folio_cifrado)
 
 		p.set("center")
-		p.text("BOLETO DE ENTRADA\n")
+		p.text("CONTRA\n")
 		folioZZ=('FOLIO 000' + masuno)
 		p.text(folioZZ+'\n')
-		p.text('Entro: '+horaentrada+'\n')
+		p.text('Entro: '+horaentrada[:-3]+'\n')
 		p.text('Placas '+placa+'\n')
-		p.set(align="left")
-		p.image("img\LOGO1.jpg")
+		p.image("LOGO1.jpg")
 		p.cut()
-		p.image("img\LOGO1.jpg")
+		p.image("LOGO1.jpg")
 		p.text("--------------------------------------\n")
-		p.set(align="center")
 		p.text("BOLETO DE ENTRADA\n")
 		folioZZ=('FOLIO 000' + masuno)
-		p.text('Entro: '+horaentrada+'\n')
+		p.text('Entro: '+horaentrada[:-3]+'\n')
 		p.text('Placas '+placa+'\n')
 		p.text(folioZZ+'\n')
-		p.image("img\AutoA.png")
-		p.set(align = "center")
+		p.image("AutoA.png")
 		p.image("reducida.png")
 		p.text("            Le Atiende:               \n")
 		p.text("--------------------------------------\n")
@@ -210,19 +208,19 @@ class FormularioOperacion:
 		self.entryfolio.grid(column=1, row=0, padx=4, pady=4)
 		#se crea objeto para mostrar el dato de la  Entrada solo lectura
 		self.descripcion=tk.StringVar()
-		self.entrydescripcion=ttk.Entry(self.labelframe2, textvariable=self.descripcion, state="readonly")
+		self.entrydescripcion=ttk.Entry(self.labelframe2, textvariable=self.descripcion, state="readonly",  width=14)
 		self.entrydescripcion.grid(column=1, row=1, padx=4, pady=4)
 		#se crea objeto para mostrar el dato la Salida solo lectura
 		self.precio=tk.StringVar()
-		self.entryprecio=ttk.Entry(self.labelframe2, textvariable=self.precio, state="readonly")
+		self.entryprecio=ttk.Entry(self.labelframe2, textvariable=self.precio, state="readonly",  width=14)
 		self.entryprecio.grid(column=1, row=2, padx=4, pady=4)
 		#se crea objeto para MOSTRAR LA HORA DEL CALCULO
 		self.copia=tk.StringVar()
-		self.entrycopia=tk.Entry(self.labelframe3, width=20, textvariable=self.copia, state = "readonly")
+		self.entrycopia=tk.Entry(self.labelframe3, width=14, textvariable=self.copia, state = "readonly")
 		self.entrycopia.grid(column=1, row=1)
 		#SE CREA UN OBJETO caja de texto IGUAL A LOS DEMAS Y MUESTRA EL TOTAL DEL TIEMPO
 		self.ffeecha=tk.StringVar()
-		self.entryffeecha=tk.Entry(self.labelframe3, width=20, textvariable=self.ffeecha, state= "readonly")
+		self.entryffeecha=tk.Entry(self.labelframe3, width=14, textvariable=self.ffeecha, state= "readonly")
 		self.entryffeecha.grid(column=1, row=2)
 		#SE CREA UN OBJETO caja de texto IGUAL A LOS DEMAS para mostrar el importe y llevarlo a guardar en BD
 		self.importe=tk.StringVar()
@@ -439,7 +437,8 @@ class FormularioOperacion:
 
 
 	def Comprobante(self):
-		p.text("        Comprobante de pago\n")
+		p.set('center')
+		p.text("Comprobante de pago\n")
 		placa=str(self.Placa.get(), )
 		# hacer la foto de codigo qr
 		#img = qrcode.make("2 de septiembre")
@@ -455,7 +454,7 @@ class FormularioOperacion:
 		f = open("reducida.png", "wb")
 		img.save(f)
 		f.close()
-		p.image("img\LOGO1.jpg")
+		p.image("LOGO1.jpg")
 		#Compro de comprobante
 		p.set('left')
 		ImporteCompro=str(self.importe.get(),)
@@ -844,9 +843,9 @@ class FormularioOperacion:
 			p.set('Big line\n', font='b')
 			p.text('Fecha: '+horaNota+'\n')
 			EntradaCompro = str(self.descripcion.get(),)
-			p.text('El auto entro: '+EntradaCompro[:-3]+'\n')
+			p.text('El auto entro: '+EntradaCompro+'\n')
 			SalioCompro = str(self.copia.get(),)
-			p.text('El auto salio: '+SalioCompro[:-3]+'\n')
+			p.text('El auto salio: '+SalioCompro+'\n')
 			self.GuardarCobro()
 			self.FolioCancelado.set("")
 			p.cut()
@@ -1084,7 +1083,7 @@ class FormularioOperacion:
 						worksheet = workbook.add_worksheet('CORTE')
 						#Definimos Encabezado Principal
 						#Obtnemos imagen del Encabezado
-						worksheet.insert_image('A1', 'img\LOGO.jpg',{'x_scale': 0.85, 'y_scale': 0.85}) #Insert de Logo (imagen.png)
+						worksheet.insert_image('A1', 'LOGO.jpg',{'x_scale': 0.85, 'y_scale': 0.85}) #Insert de Logo (imagen.png)
 						cell_format0 = workbook.add_format()
 						cell_format0 = workbook.add_format({'align':'right','bold': True})
 						cell_format3 = workbook.add_format()
@@ -1208,8 +1207,14 @@ class FormularioOperacion:
 		if len(datos) > 0:
 			respuesta=self.operacion1.consulta(datos)
 			if len(respuesta)>0:
-				self.descripcion.set(respuesta[0][0])
-				self.precio.set(respuesta[0][1])
+				descripcion = respuesta[0][0]
+
+				self.descripcion.set(descripcion)
+
+				precio = respuesta[0][1]
+
+				self.precio.set(precio)
+
 				self.CalculaPermanencia()#nos vamos a la funcion de calcular permanencia
 
 				self.PrTi.set("Maltratado")
@@ -1223,4 +1228,4 @@ class FormularioOperacion:
 			self.folio.set("")
 			self.entryfolio.focus()
 
-#aplicacion1=FormularioOperacion()
+aplicacion1=FormularioOperacion()

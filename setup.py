@@ -6,7 +6,7 @@ modules = [
 ]
 
 # Archivo principal de tu proyecto (donde se encuentra el punto de entrada)
-main_script = 'Cobro\pantallfull.py'
+main_script = 'main.py'
 
 # Configuración para generar el ejecutable
 setup(
