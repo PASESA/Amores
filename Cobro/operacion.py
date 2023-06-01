@@ -33,7 +33,7 @@ class Operacion:
 	def consulta(self, datos):
 		cone=self.abrir()
 		cursor=cone.cursor()
-		sql="select Entrada, Salida from Entradas where id=%s"
+		sql="select Entrada, Salida, id, TiempoTotal, TarifaPreferente, Importe, Placas from Entradas where id=%s"
 	   #sql="select descripcion, precio from articulos where codigo=%s"
 		cursor.execute(sql, datos)
 		cone.close()
@@ -139,7 +139,7 @@ class Operacion:
 	def corte(self):
 		cone=self.abrir()
 		cursor=cone.cursor()
-		sql="select sum(importe) from Entradas where CorteInc = 0"
+		sql="select COALESCE(sum(importe), 0) from Entradas where CorteInc = 0"
 		cursor.execute(sql)
 		cone.close()
 		return cursor.fetchall()
@@ -321,8 +321,6 @@ class Operacion:
 		# Convierte la lista cifrada de vuelta a una cadena de texto.
 		cifrado = ''.join(cifrado)
 
-		print(cifrado)
-
 		# Devuelve el número de folio cifrado.
 		return cifrado
 
@@ -396,5 +394,82 @@ class Operacion:
 
 		# Guardar la imagen redimensionada en un archivo
 		img.save(path)
+
+
+	def Boletos_perdidos_generados(self):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql = """SELECT COUNT(*) AS "BOLETOS PERDIDOS GENERADOS" FROM entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = 0;"""
+		cursor.execute(sql)        
+		cone.commit()
+
+		resultados = cursor.fetchall()
+
+		# Se cierra la conexión con la base de datos.
+		cone.close()
+
+		# Se devuelve la lista de tuplas con los resultados de la consulta.
+		return resultados
+
+	def Boletos_perdidos_generados_desglose(self):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql = """SELECT id, Entrada, Salida, Placas FROM entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = 0;"""
+		cursor.execute(sql)        
+		cone.commit()
+
+		resultados = cursor.fetchall()
+
+		# Se cierra la conexión con la base de datos.
+		cone.close()
+
+		# Se devuelve la lista de tuplas con los resultados de la consulta.
+		return resultados
+
+
+
+	def Boletos_perdidos_cobrados(self, Numcorte):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql = """SELECT COUNT(*) AS "BOLETOS PERDIDOS COBRADOS" FROM entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = %s AND TarifaPreferente IS NOT NULL;"""
+		cursor.execute(sql, Numcorte)        
+		cone.commit()
+		resultados = cursor.fetchall()
+
+		# Se cierra la conexión con la base de datos.
+		cone.close()
+
+		# Se devuelve la lista de tuplas con los resultados de la consulta.
+		return resultados
+
+	def Boletos_perdidos_cobrados_desglose(self, Numcorte):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql = """SELECT id, Entrada, Salida, Placas FROM entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = %s AND TarifaPreferente IS NOT NULL;"""
+		cursor.execute(sql, Numcorte)        
+		cone.commit()
+		resultados = cursor.fetchall()
+
+		# Se cierra la conexión con la base de datos.
+		cone.close()
+
+		# Se devuelve la lista de tuplas con los resultados de la consulta.
+		return resultados
+
+
+
+	def Boletos_perdidos_no_cobrados(self):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql = """SELECT COUNT(*) AS "BOLETOS PERDIDOS NO COBRADOS" FROM entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = 0 AND TarifaPreferente IS NULL;"""
+		cursor.execute(sql)        
+		cone.commit()
+		resultados = cursor.fetchall()
+
+		# Se cierra la conexión con la base de datos.
+		cone.close()
+
+		# Se devuelve la lista de tuplas con los resultados de la consulta.
+		return resultados
 
 
