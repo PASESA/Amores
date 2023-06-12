@@ -97,6 +97,7 @@ class FormularioOperacion:
 
 
 		fechaEntro = datetime.today()
+		fechaEntro = fechaEntro - timedelta(minutes = 1, seconds = fechaEntro.second)
 		horaentrada = str(fechaEntro)
 		horaentrada=horaentrada[:19]
 		nueva_fecha = horaentrada[:-3]
@@ -108,7 +109,7 @@ class FormularioOperacion:
 		#Generar QR
 		self.operacion1.generar_QR(folio_cifrado)
 
-		p.set("center")
+		p.set(align = "center")
 		p.text("CONTRA\n")
 		folioZZ=('FOLIO 000' + masuno)
 		p.text(folioZZ+'\n')
@@ -372,20 +373,20 @@ class FormularioOperacion:
 					importe = 238
 				if horas_dentro >=1 and horas_dentro <= 24:
 					if minutos_dentro < 16 and minutos_dentro  >= 0:
-						importe = 200+((ffeecha.days)*720 + (horas_dentro * 38)+13)
+						importe = 250+((ffeecha.days)*720 + (horas_dentro * 38)+13)
 					if minutos_dentro < 31 and minutos_dentro  >= 16:
-						importe = 200+((ffeecha.days)*720 + (horas_dentro * 38)+26)
+						importe = 250+((ffeecha.days)*720 + (horas_dentro * 38)+26)
 					if minutos_dentro < 46 and minutos_dentro  >= 31:
-						importe = 200+((ffeecha.days)*720 + (horas_dentro * 38)+32)
+						importe = 250+((ffeecha.days)*720 + (horas_dentro * 38)+32)
 					if minutos_dentro <= 59 and minutos_dentro  >= 46:
-						importe = 200+((ffeecha.days)*720 + (horas_dentro * 38)+38)
+						importe = 250+((ffeecha.days)*720 + (horas_dentro * 38)+38)
 
 				if horas_dentro > 24 or ffeecha.days >= 1:
-					importe = 200+((ffeecha.days)*720 + (horas_dentro * 38))
+					importe = 250+((ffeecha.days)*720 + (horas_dentro * 38))
 
 
 			else:
-				importe = 200
+				importe = 250
 
 			# Establecer el importe y mostrarlo
 			self.importe.set(importe)
@@ -848,13 +849,13 @@ class FormularioOperacion:
 			importe = 80
 			self.importe.set(importe)
 			self.IImporte.config(text=self.importe.get()) 
-			self.PrTi.set("12HRS")
+			self.PrTi.set("PROM12")
 
 		if horas_dentro > 12:
 			importe = 250
 			self.importe.set(importe)
 			self.IImporte.config(text=self.importe.get())                
-			self.PrTi.set("12HRS")
+			self.PrTi.set("PROM12")
 			self.promo.set("")
 			
 			
@@ -1306,7 +1307,7 @@ class FormularioOperacion:
 			p.text(BolCobrImpresion+' Boletos           Suma total $'+Im38+'\n')    
 
 		p.text("----------------------------------\n")
-    
+	
 
 		Boletos_perdidos_generados = self.operacion1.Boletos_perdidos_generados()
 		Boletos_perdidos_generados = Boletos_perdidos_generados[0][0]
