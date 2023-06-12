@@ -399,7 +399,7 @@ class Operacion:
 	def Boletos_perdidos_generados(self):
 		cone=self.abrir()
 		cursor=cone.cursor()
-		sql = """SELECT COUNT(*) AS "BOLETOS PERDIDOS GENERADOS" FROM entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = 0;"""
+		sql = """SELECT COUNT(*) AS "BOLETOS PERDIDOS GENERADOS" FROM Entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = 0;"""
 		cursor.execute(sql)        
 		cone.commit()
 
@@ -414,7 +414,7 @@ class Operacion:
 	def Boletos_perdidos_generados_desglose(self):
 		cone=self.abrir()
 		cursor=cone.cursor()
-		sql = """SELECT id, Entrada, Salida, Placas FROM entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = 0;"""
+		sql = """SELECT id, Entrada, Salida, Placas FROM Entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = 0;"""
 		cursor.execute(sql)        
 		cone.commit()
 
@@ -431,7 +431,7 @@ class Operacion:
 	def Boletos_perdidos_cobrados(self, Numcorte):
 		cone=self.abrir()
 		cursor=cone.cursor()
-		sql = """SELECT COUNT(*) AS "BOLETOS PERDIDOS COBRADOS" FROM entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = %s AND TarifaPreferente IS NOT NULL;"""
+		sql = """SELECT COUNT(*) AS "BOLETOS PERDIDOS COBRADOS" FROM Entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = %s AND TarifaPreferente IS NOT NULL;"""
 		cursor.execute(sql, Numcorte)        
 		cone.commit()
 		resultados = cursor.fetchall()
@@ -445,7 +445,7 @@ class Operacion:
 	def Boletos_perdidos_cobrados_desglose(self, Numcorte):
 		cone=self.abrir()
 		cursor=cone.cursor()
-		sql = """SELECT id, Entrada, Salida, Placas FROM entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = %s AND TarifaPreferente IS NOT NULL;"""
+		sql = """SELECT id, Entrada, Salida, Placas FROM Entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = %s AND TarifaPreferente IS NOT NULL;"""
 		cursor.execute(sql, Numcorte)        
 		cone.commit()
 		resultados = cursor.fetchall()
@@ -461,7 +461,7 @@ class Operacion:
 	def Boletos_perdidos_no_cobrados(self):
 		cone=self.abrir()
 		cursor=cone.cursor()
-		sql = """SELECT COUNT(*) AS "BOLETOS PERDIDOS NO COBRADOS" FROM entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = 0 AND TarifaPreferente IS NULL;"""
+		sql = """SELECT COUNT(*) AS "BOLETOS PERDIDOS NO COBRADOS" FROM Entradas WHERE `Placas` = "BoletoPerdido" AND CorteInc = 0 AND TarifaPreferente IS NULL;"""
 		cursor.execute(sql)        
 		cone.commit()
 		resultados = cursor.fetchall()
