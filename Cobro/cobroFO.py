@@ -98,7 +98,6 @@ class FormularioOperacion:
 
 
 		fechaEntro = datetime.today()
-		fechaEntro = fechaEntro - timedelta(minutes = 1, seconds = fechaEntro.second)
 		horaentrada = str(fechaEntro)
 		horaentrada=horaentrada[:19]
 		nueva_fecha = horaentrada[:-3]
@@ -556,14 +555,11 @@ class FormularioOperacion:
 			self.ffeecha.set(ffecha)
 			self.ffeecha_auxiliar.set(self.ffeecha.get()[:-3])
 
-			if minutos_dentro < 15 and minutos_dentro >= 0:
-				minutos = 1
-			elif minutos_dentro < 30 and minutos_dentro >= 15:
-				minutos = 2
-			elif minutos_dentro < 45 and minutos_dentro >= 30:
-				minutos = 3
-			elif minutos_dentro <= 59 and minutos_dentro >= 45:
-				minutos = 4
+			if minutos_dentro == 0: minutos = 0
+			elif minutos_dentro < 16 and minutos_dentro >= 1: minutos = 1
+			elif minutos_dentro < 31 and minutos_dentro >= 16: minutos = 2
+			elif minutos_dentro < 46 and minutos_dentro >= 31: minutos = 3
+			elif minutos_dentro <= 59 and minutos_dentro >= 46: minutos = 4
 
 			if ffecha.days == 0 and horas_dentro == 0:
 				# Si la permanencia es menor a 1 hora, se aplica una tarifa fija de 28 unidades
