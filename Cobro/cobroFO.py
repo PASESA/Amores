@@ -24,6 +24,7 @@ import serial
 ###-###
 p = Usb(0x04b8, 0x0e15, 0)
 penalizacion_con_importe = False
+from view_login import View_Login
 
 
 
@@ -97,7 +98,6 @@ class FormularioOperacion:
 
 
 		fechaEntro = datetime.today()
-		fechaEntro = fechaEntro - timedelta(minutes = 1, seconds = fechaEntro.second)
 		horaentrada = str(fechaEntro)
 		horaentrada=horaentrada[:19]
 		nueva_fecha = horaentrada[:-3]
@@ -555,14 +555,11 @@ class FormularioOperacion:
 			self.ffeecha.set(ffecha)
 			self.ffeecha_auxiliar.set(self.ffeecha.get()[:-3])
 
-			if minutos_dentro < 15 and minutos_dentro >= 0:
-				minutos = 1
-			elif minutos_dentro < 30 and minutos_dentro >= 15:
-				minutos = 2
-			elif minutos_dentro < 45 and minutos_dentro >= 30:
-				minutos = 3
-			elif minutos_dentro <= 59 and minutos_dentro >= 45:
-				minutos = 4
+			if minutos_dentro == 0: minutos = 0
+			elif minutos_dentro < 16 and minutos_dentro >= 1: minutos = 1
+			elif minutos_dentro < 31 and minutos_dentro >= 16: minutos = 2
+			elif minutos_dentro < 46 and minutos_dentro >= 31: minutos = 3
+			elif minutos_dentro <= 59 and minutos_dentro >= 46: minutos = 4
 
 			if ffecha.days == 0 and horas_dentro == 0:
 				# Si la permanencia es menor a 1 hora, se aplica una tarifa fija de 28 unidades
@@ -987,6 +984,20 @@ class FormularioOperacion:
 		self.entryAnoCorte.grid(column=1, row=2)
 		self.boton6=tk.Button(self.labelframe5, text="Reporte de Corte", command=self.Reporte_Corte, width=15, height=1, anchor="center", background="red")
 		self.boton6.grid(column=3, row=2, padx=4, pady=4) 
+
+		self.seccion_boton_usuario = ttk.LabelFrame(self.pagina3, text='Administrar usuarios')
+		self.seccion_boton_usuario.grid(row=3, column=1, padx=10, pady=10)
+
+		self.boton_usuarios=tk.Button(self.seccion_boton_usuario, text="Entrar",	 
+		command=lambda:{
+				self.desactivar(),
+				View_Login(),
+				self.activar()
+				},
+		width=15, height=1, anchor="center", background="red")
+		self.boton_usuarios.grid(column=0, row=0, padx=4, pady=4)  
+
+
 	def BoletoDentro2(self):
 		respuesta=self.operacion1.Autos_dentro()
 		self.scrolledtxt2.delete("1.0", tk.END)
@@ -1554,6 +1565,34 @@ class FormularioOperacion:
 			mb.showinfo("Error", "Ingrese el folio del boleto dañado")
 			self.folio.set("")
 			self.entryfolio.focus()
+
+	def desactivar(self):
+		"""
+		Desactiva los botones de la interface
+	
+		:param None: 
+
+		:raises None: 
+
+		:return:
+			- None
+		"""
+		self.ventana1.withdraw()  # oculta la ventana
+
+	def activar(self):
+		"""
+		Activa los botones de la interface
+
+		:param None: 
+
+		:raises None: 
+
+		:return:
+			- None
+		"""
+		self.ventana1.deiconify()
+
+
 
 #aplicacion1=FormularioOperacion()
 
