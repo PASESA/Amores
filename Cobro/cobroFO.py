@@ -1012,8 +1012,25 @@ class FormularioOperacion:
 						self.entryNumTarjeta2.focus()
 						return False  
 					else:        
-						Salida=datetime.today()
-						datos=(Salida, 'Afuera', Existe)
+						entrada = self.operacion1.consultar_UpdMovsPens(Existe)
+						entrada = entrada[0][0]
+						# Obtener la fecha y hora actual en formato deseado
+						entrada = entrada.strftime("%Y-%m-%d %H:%M:%S")
+						# Convertir la cadena de caracteres en un objeto datetime
+						entrada = datetime.strptime(entrada, "%Y-%m-%d %H:%M:%S")
+
+						Salida=datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+						# Convertir la cadena de caracteres en un objeto datetime
+						Salida = datetime.strptime(Salida, "%Y-%m-%d %H:%M:%S")
+
+						tiempo_total = Salida - entrada
+						print("--------------------------")
+						print(f"entro: {entrada}")
+						print(f"salio: {Salida}")
+						print(f"tiempo:{tiempo_total}")
+						print("--------------------------")
+
+						datos=(Salida, tiempo_total, 'Afuera', Existe)
 						datos1=('Afuera', Existe)
 						#sql="INSERT INTO PagosPens(id_cliente, num_tarjeta, Fecha_pago, Fecha_vigencia, Mensualidad, Monto) values (%s,%s,%s,%s,%s,%s)"
 						self.operacion1.UpdMovsPens(datos)
@@ -2440,7 +2457,7 @@ class FormularioOperacion:
 				self.entryPlaca.focus()
 				return False
 			else:
-				respuesta = self.operacion1.ConsultaPensionado(Existe)
+				respuesta = self.operacion1.ConsultaPensionado_entrar(Existe)
 
 				for fila in respuesta:
 					VigAct = fila[0]
@@ -2490,6 +2507,8 @@ class FormularioOperacion:
 						self.label_informacion.config(text="Entró pensionado")
 
 		except ValueError as e:
+			print(e)
+			traceback.print_exc()
 			self.label_informacion.config(text="Numero de tarjeta no\nvalido, leer de nuevo")
 			self.Placa.set("")
 			self.entryPlaca.focus()

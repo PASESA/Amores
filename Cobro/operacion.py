@@ -526,7 +526,7 @@ class Operacion:
 	def UpdMovsPens(self, datos):
 		cone=self.abrir()
 		cursor=cone.cursor()
-		sql="UPDATE MovimientosPens SET Salida=%s, Estatus=%s WHERE idcliente=%s and Salida is null"
+		sql="UPDATE MovimientosPens SET Salida=%s, TiempoTotal =%s, Estatus=%s WHERE idcliente=%s and Salida is null"
 		#sql = "update Entradas set CorteInc = %s, vobo = %s where TiempoTotal is not null and CorteInc=0;"
 		cursor.execute(sql, datos)
 		cone.commit()
@@ -553,6 +553,7 @@ class Operacion:
 		cursor.execute(sql)
 		cone.close()
 		return cursor.fetchall()  
+
 	def nombre_usuario_activo(self):
 		"""
 		Esta función realiza una consulta a la base de datos para obtener el nombre del usuario que esta activo.
@@ -648,3 +649,23 @@ class Operacion:
 		cursor.execute(sql,datos)
 		cone.commit()
 		cone.close()
+
+
+	def consultar_UpdMovsPens(self, datos):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql="SELECT	Entrada FROM MovimientosPens WHERE idcliente=%s and Salida is null"
+		#sql = "update Entradas set CorteInc = %s, vobo = %s where TiempoTotal is not null and CorteInc=0;"
+		cursor.execute(sql, datos)
+		cone.commit()
+		cone.close()
+		return cursor.fetchall()
+
+	def ConsultaPensionado_entrar(self, datos):
+		cone=self.abrir()
+		cursor=cone.cursor()
+		sql="SELECT Fecha_vigencia, Estatus, Vigencia, Tolerancia FROM Pensionados where id_cliente=%s"
+		cursor.execute(sql,datos)
+		cone.close()
+		return cursor.fetchall()
+
