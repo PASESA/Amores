@@ -19,7 +19,7 @@ import xlsxwriter
 import serial
 
 
-###-###
+
 p = Usb(0x04b8, 0x0e15, 0)
 penalizacion_con_importe = False
 from dateutil.relativedelta import relativedelta
@@ -1547,8 +1547,8 @@ class FormularioOperacion:
 
 
 		respuesta = self.operacion1.total_pensionados_corte(Numcorte)
-		if len(respuesta) == 0:
-			p.cut()
+		if len(respuesta) == 0: pass
+
 
 		else:
 			p.text("Cantidad e Importes Pensiones"+'\n')
@@ -2524,6 +2524,6 @@ class FormularioOperacion:
 
 
 
-#aplicacion1=FormularioOperacion()
+aplicacion1=FormularioOperacion()
 
 
