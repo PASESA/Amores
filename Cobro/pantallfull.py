@@ -1,16 +1,12 @@
-#VERSION PINO SUAREZ
 from datetime import datetime, date
 from tkinter import messagebox as mb
 from tkinter import *
 import tkinter as tk
-#from Cobro
 import operacion
-import subprocess
-
+#import subprocess
 
 class Fullscreen_Example:
     def __init__(self):
-        
         self.operacion1=operacion.Operacion()    
         self.window = tk.Tk()
         self.window.title("Registro Inicio de Turno")        
@@ -70,25 +66,24 @@ class Fullscreen_Example:
             
             if respuesta:
                 for fila in respuesta :
-                   idusuario = str(fila[0])
-                   Clave = str(fila[1])
-                   nombre = str(fila[2])     
+                    idusuario = str(fila[0])
+                    Clave = str(fila[1])
+                    nombre = str(fila[2])     
                 if contrasena == Clave:    
-                   actual =(idusuario, usuario, inicio, nombre, turno) 
-                   self.operacion1.ActuaizaUsuario(actual)
-                   ##Cerrar la ventana
-                   self.quitF()
-                   #from Cobro
-                   import cobroFO
-                   cobroFO.FormularioOperacion()      
-                   
+                    actual =(idusuario, usuario, inicio, nombre, turno) 
+                    self.operacion1.ActuaizaUsuario(actual)
+                    ##Cerrar la ventana
+                    self.quitF()
+                    from cobroFO import FormularioOperacion       
+                    FormularioOperacion()
+                    
 
                 else:
-                  mb.showwarning("IMPORTANTE", "La Contraseña no coincide, volver a capturarla")
-                  self.Contraseña.set("")               
-                  self.entryContraseña.focus()
-                  ##limpiar el text de contraseña y poner el foco en ella.
-                  ##Asteriscos en la contraseña  
+                    mb.showwarning("IMPORTANTE", "La Contraseña no coincide, volver a capturarla")
+                    self.Contraseña.set("")               
+                    self.entryContraseña.focus()
+                    ##limpiar el text de contraseña y poner el foco en ella.
+                    ##Asteriscos en la contraseña  
             else:
                 mb.showwarning("IMPORTANTE", "El usuario no existe")
                 self.Nombre.set("")
@@ -110,4 +105,4 @@ class Fullscreen_Example:
         print('salir')
 
 if __name__ == '__main__':
-    app = Fullscreen_Example()  
+    app = Fullscreen_Example()
