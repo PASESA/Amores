@@ -243,9 +243,6 @@ class FormularioOperacion:
         #botones
 
 
-        self.boton2=tk.Button(self.labelpromo, text="PROMOCIÓN\n12 HORAS", command=self.CalculaPromocion12HRS, width=16, height=2, anchor="center")
-        self.boton2.grid(column=1, row=2, padx=5, pady=10, sticky=tk.NW)
-
         self.labelcuantopagas=ttk.LabelFrame(self.FOLIO_QR, text='cual es el pago')
         self.labelcuantopagas.grid(column=0,row=2, padx=5, pady=10, sticky=tk.NW)
         self.cuantopagas=ttk.Label(self.labelcuantopagas, text="la cantidad entregada")
@@ -646,28 +643,47 @@ class FormularioOperacion:
         self.TiempoTotal.set(TiempoTotal)
         self.TiempoTotal_auxiliar.set(self.TiempoTotal.get()[:-3])
 
-        # Calcula la tarifa y el importe a pagar
-        if self.minutos_dentro == 0:
-            minutos = 0
-        elif self.minutos_dentro < 16 and self.minutos_dentro >= 1:
-            minutos = 1
-        elif self.minutos_dentro < 31 and self.minutos_dentro >= 16:
-            minutos = 2
-        elif self.minutos_dentro < 46 and self.minutos_dentro >= 31:
-            minutos = 3
-        elif self.minutos_dentro <= 59 and self.minutos_dentro >= 46:
-            minutos = 4
-
         importe = 0
-
         if self.dias_dentro == 0 and self.horas_dentro == 0:
             importe = 28
-
         else:
-            importe = (self.dias_dentro * 250) + (self.horas_dentro * 28) + (minutos * 7)
 
+            # Calcula la tarifa y el importe a pagar
+            if self.minutos_dentro == 0:
+                cuarto_hora = 0
+            elif self.minutos_dentro < 16 and self.minutos_dentro >= 1:
+                cuarto_hora = 1
+            elif self.minutos_dentro < 31 and self.minutos_dentro >= 16:
+                cuarto_hora = 2
+            elif self.minutos_dentro < 46 and self.minutos_dentro >= 31:
+                cuarto_hora = 3
+            elif self.minutos_dentro <= 59 and self.minutos_dentro >= 46:
+                cuarto_hora = 4
 
-        importe = int(importe)
+            # Calcula el importe a pagar según la tabla de precios
+            if self.horas_dentro <= 3:
+
+                importe = (self.horas_dentro * 28) + (cuarto_hora * 7)
+                if self.horas_dentro == 2 and cuarto_hora == 4:
+                    importe = 77
+
+                if self.horas_dentro == 3 and self.minutos_dentro >= 0:
+                    importe = 80
+
+            else:
+                if 3 <= self.horas_dentro < 12:
+                    importe = 80
+
+                elif 12 <= self.horas_dentro <= 14:
+                    importe = (self.horas_dentro * 28) + (cuarto_hora * 7) - 256
+                    if cuarto_hora == 4:
+                        importe = 160
+
+                else:
+                    importe = 160
+
+                # Calcula el importe total a pagar
+            importe = (self.dias_dentro * 160) + importe
 
         # Establecer el importe y mostrarlo
         self.mostrar_importe(importe)
@@ -884,48 +900,6 @@ class FormularioOperacion:
         self.TarifaPreferente.set(text_promo)
         self.promo.set("")
         self.mostrar_importe(importe)
-
-    def CalculaPromocion12HRS(self):
-        valida_promo = self.PrTi.get()
-
-        if valida_promo == "Per":
-            mb.showerror("Error", "A los boletos cobrados como perdidos no se pueden aplicar promociones")
-            self.promo.set('')
-            self.promo_auxiliar.set('')
-            return
-
-        TipoPromocion = self.promo.get()
-        self.promo_auxiliar.set(TipoPromocion)
-        respuesta=self.DB.ValidaPromo(TipoPromocion)
-
-        fecha = datetime.today()
-        fecha1= fecha.strftime("%Y-%m-%d %H:%M:%S")
-        fechaActual= datetime.strptime(fecha1, '%Y-%m-%d %H:%M:%S')
-        date_time_str=str(self.descripcion.get())
-        date_time_obj= datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
-        date_time_mod = datetime.strftime(date_time_obj, '%Y/%m/%d/%H/%M/%S')
-        date_time_mod2 = datetime.strptime(date_time_mod, '%Y/%m/%d/%H/%M/%S')
-        ffecha = fechaActual - date_time_mod2
-        segundos_vividos = ffecha.seconds
-        horas_dentro, segundos_vividos = divmod(segundos_vividos, 3600)
-        minutos_dentro, segundos_vividos = divmod(segundos_vividos, 60)
-        importe = 0
-        if horas_dentro <= 12:
-            importe = 80
-            self.importe.set(importe)
-            self.IImporte.config(text=self.importe.get()) 
-
-        if horas_dentro > 12:
-            importe = 250
-            self.importe.set(importe)
-            self.IImporte.config(text=self.importe.get())                
-
-        text_promo = "PROM12"
-
-        if valida_promo == "Danado":text_promo = text_promo + valida_promo
-
-        self.TarifaPreferente.set(text_promo)
-        self.promo.set("")
 
 
     def PensionadosSalida(self):
@@ -1525,7 +1499,7 @@ class FormularioOperacion:
         # Corta el papel
         p.cut()
 
-        # p.close()
+        p.close()
 
         # Cierra el programa al final del reporte
         self.Cerrar_Programa()
