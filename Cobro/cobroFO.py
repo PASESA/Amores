@@ -1289,6 +1289,7 @@ class FormularioOperacion:
 
 
     def Guardar_Corte(self):
+        self.Calcular_Corte()
         self.Puertoycontar()
 
         ######Obtenemos los datos del Cajero en Turno
