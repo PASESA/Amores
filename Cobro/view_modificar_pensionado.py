@@ -1,15 +1,16 @@
+from tkinter import filedialog
+import qrcode
+
 from tkinter import messagebox as mb
 import tkinter as tk
 from tkinter import ttk
-from tkinter import StringVar, IntVar
+from tkinter import StringVar
 
 from datetime import datetime
 
 from queries import Pensionados
 import traceback
 
-
-from dateutil.relativedelta import relativedelta
 
 class View_modificar_pensionados():
     """Clase para mostrar la ventana de modificación de datos de un pensionado."""
@@ -114,7 +115,7 @@ class View_modificar_pensionados():
         etiqueta_user = tk.Label(seccion_superior, text=f'Bienvenido/a')
         etiqueta_user.grid(row=0, column=0, padx=5, pady=5)
 
-        seccion_datos_pensionado = ttk.LabelFrame(seccion_superior, text="\t\t\tIngresa los datos del pensionado a registrar")
+        seccion_datos_pensionado = ttk.LabelFrame(seccion_superior, text="\t\t\tIngresa los datos del pensionado a modificar")
         seccion_datos_pensionado.grid(row=1, column=0,padx=5, pady=5, sticky=tk.NW)
 
 
@@ -122,7 +123,7 @@ class View_modificar_pensionados():
         seccion_datos_personales_pensionado.grid(row=2, column=0,padx=5, pady=5, sticky=tk.NW)
 
 
-        etiqueta_numero_tarjeta = ttk.Label(seccion_datos_personales_pensionado, text='Número de tarjeta: ')
+        etiqueta_numero_tarjeta = ttk.Label(seccion_datos_personales_pensionado, text='Número de tarjeta/Tarjeton: ')
         etiqueta_numero_tarjeta.grid(row=0, column=0, padx=5, pady=5, sticky=tk.NW)
         self.campo_numero_tarjeta = ttk.Entry(seccion_datos_personales_pensionado, textvariable=self.variable_numero_tarjeta, state="disabled")
         self.campo_numero_tarjeta.grid(row=0, column=1, padx=5, pady=5)
@@ -221,6 +222,12 @@ class View_modificar_pensionados():
         self.campo_tolerancia = ttk.Entry(seccion_datos_pension, textvariable=self.variable_tolerancia)
         self.campo_tolerancia.grid(row=2, column=1, padx=5, pady=5)
 
+        seccion_datos_pension = tk.LabelFrame(seccion_derecha, text="QR Tarjeton/Corbata")
+        seccion_datos_pension.grid(row=2, column=0,padx=5, pady=5, sticky=tk.NW)
+
+        # Crea un botón y lo empaqueta en la seccion_botones_consulta
+        boton_generar_QR_pensionado = tk.Button(seccion_datos_pension,  text='Generar QR', command=self.generar_QR_pensionado, font=("Arial", 10), background="red")
+        boton_generar_QR_pensionado.grid(row=5, column=0, padx=5, pady=5)
 
         seccion_inferior = tk.LabelFrame(self.panel_crud, text='')
         seccion_inferior.grid(row=1, column=0)
@@ -233,6 +240,13 @@ class View_modificar_pensionados():
         # Crea un botón y lo empaqueta en la seccion_botones_consulta
         boton_modificar_pensionado = tk.Button(seccion_inferior, text='Guardar Cambios', command=self.modificar_pensionado, width=20, font=("Arial", 12), background="red")
         boton_modificar_pensionado.grid(row=0, column=1, padx=5, pady=5)
+
+    def generar_QR_pensionado(self):
+        QR = f"Pension-{self.variable_numero_tarjeta.get()}"
+        name_image = f"{QR}_{self.variable_placas.get()}_{self.variable_nombre.get()}.png".replace(' ', '_')
+        path = filedialog.asksaveasfilename(defaultextension='.png', initialfile=name_image)
+        if path != '':
+            self.generar_QR(QR_info=QR, path=path, zise = (600, 600))
 
     def desactivar_tarjeta(self):
         """ Desactiva temporal o permanentemente la tarjeta del pensionado."""
@@ -322,5 +336,20 @@ class View_modificar_pensionados():
         self.panel_crud.quit()
         self.panel_crud.destroy()
 
+    def generar_QR(self, QR_info: str, path: str = "reducida.png", zise:tuple = (320, 320)) -> None:
+        """Genera un código QR a partir de la información dada y lo guarda en un archivo de imagen.
 
-#View_modificar_pensionados()
+        Args:
+            QR_info (str): La información para generar el código QR.
+            path (str, optional): La ruta y el nombre del archivo de imagen donde se guardará el código QR, por defecto es "reducida.png".
+        """
+        # Generar el código QR
+        img = qrcode.make(QR_info)
+
+        # Redimensionar el código QR a un tamaño específico
+        img = img.get_image().resize(zise)
+
+        # Guardar la imagen redimensionada en un archivo
+        img.save(path)
+
+
