@@ -303,7 +303,7 @@ class Pensionados(Usuarios):
         return resultado[0][0]
 
     def get_QR_id(self):
-        query =f"""SELECT MAX(Id_cliente) FROM Pensionados;"""
+        query =f"""SELECT COALESCE(MAX(Id_cliente), 0) FROM Pensionados;"""
 
         # Se ejecuta la consulta y se obtiene el resultado.
         resultado = self.execute_query(query)
