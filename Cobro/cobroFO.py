@@ -61,7 +61,6 @@ class FormularioOperacion:
 
         self.DB=Operacion()
         self.root=tk.Tk()
-        self.root.state('zoomed')  # Maximizar la ventana
         self.root.title(f"{nombre_estacionamiento} COBRO")
 
         # Obtener el ancho y alto de la pantalla
@@ -149,7 +148,7 @@ class FormularioOperacion:
         boton_entrada.grid(column=0, row=1, padx=2, pady=2)
         
 
-        frame_info = tk.Frame(seccion_entrada)#, background = '#CCC')
+        frame_info = tk.LabelFrame(seccion_entrada)#, background = '#CCC')
         frame_info.grid(column=0, row=2, padx=2, pady=2)
 
         self.label_informacion = tk.Label(frame_info, text="... ", width=25, font=font_mensaje, justify='center')
@@ -196,7 +195,7 @@ class FormularioOperacion:
         corteNum = 0
         datos=(fechaEntro, corteNum, placa)
 
-        printer = Usb(data_printer)
+        printer = Usb(0x04b8, 0x0e15, 0)
 
         printer.set(align = "center")
         printer.text("BOLETO PARABRISAS\n")
@@ -498,7 +497,7 @@ class FormularioOperacion:
         datos=(fechaEntro, corteNum, placa)
 
         #aqui lo imprimimos
-        printer = Usb(data_printer)
+        printer = Usb(0x04b8, 0x0e15, 0)
 
         printer.image(logo_1)
         printer.text("--------------------------------------\n")
@@ -756,7 +755,7 @@ class FormularioOperacion:
 
         valor = 'N/A'
         # Configuracion de la impresora
-        printer = Usb(data_printer)
+        printer = Usb(0x04b8, 0x0e15, 0)
         printer.set(align="center")
         printer.text(f"{titulo}\n")
 
@@ -982,7 +981,7 @@ class FormularioOperacion:
         self.DB.UpdPens2(datos1)
 
         # Configuracion de la impresora
-        printer = Usb(data_printer)
+        printer = Usb(0x04b8, 0x0e15, 0)
         printer.set(align="center")
         printer.text("Salida de Pension\n")
 
@@ -1176,7 +1175,7 @@ class FormularioOperacion:
 
         respuesta=self.DB.desglose_cobrados(Numcorte)
         self.scrolledtxt2.delete("1.0", tk.END)
-        printer = Usb(data_printer)
+        printer = Usb(0x04b8, 0x0e15, 0)
         printer.text("El Numero de corte es "+Numcorte+'\n')
         for fila in respuesta:
             self.scrolledtxt2.insert(tk.END, str(fila[0])+" Boletos con tarifa "+str(fila[1])+"\n"+"valor c/u $"+str(fila[2])+" Total $"+str(fila[3])+"\n\n")
@@ -1272,7 +1271,7 @@ class FormularioOperacion:
         for fila in respuesta:
             self.scrolledtext1.insert(tk.END, "Entrada num: "+str(fila[0])+"\nEntro: "+str(fila[1])[:-3]+"\nSalio: "+str(fila[2])[:-3]+"\nImporte: "+str(fila[3])+"\n\n")
 
-            printer = Usb(data_printer)
+            printer = Usb(0x04b8, 0x0e15, 0)
 
             printer.text('Entrada Num :')
             printer.text(str(fila[0]))
@@ -1356,7 +1355,7 @@ class FormularioOperacion:
         ActEntradas = (maxnum, vobo )
         self.label4.configure(text=("Numero de corte",maxnum))
 
-        printer = Usb(data_printer)
+        printer = Usb(0x04b8, 0x0e15, 0)
 
         # printer.image(logo_1)
 
@@ -2192,7 +2191,7 @@ class FormularioOperacion:
         Raises:
             None
         """
-        printer = Usb(data_printer)
+        printer = Usb(0x04b8, 0x0e15, 0)
         # Establece la alineacion del texto al centro
         printer.set(align="center")
 
@@ -2604,7 +2603,7 @@ class FormularioOperacion:
                 Apell2_cliente = fila[7]
 
             if VigAct is None:
-                self.label_informacion.config(text="Tajeton desactivado")
+                self.label_informacion.config(text="Tarjeton desactivado")
                 self.Placa.set("")
                 self.entry_placa.focus()
                 return
@@ -2649,7 +2648,7 @@ class FormularioOperacion:
             QR_pension = f"Pension-{ID_pen}"
             self.DB.generar_QR(QR_pension)
             print(f"QR pension: {QR_pension}")
-            printer = Usb(data_printer)
+            printer = Usb(0x04b8, 0x0e15, 0)
             printer.set(align="center")
 
             printer.image(logo_1)
