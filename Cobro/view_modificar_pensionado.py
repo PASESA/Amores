@@ -10,18 +10,20 @@ from datetime import datetime
 
 from queries import Pensionados
 import traceback
+from escpos.printer import Usb, USBNotFoundError
 
 
 class View_modificar_pensionados():
     """Clase para mostrar la ventana de modificación de datos de un pensionado."""
 
-    def __init__(self, datos_pensionado):
+    def __init__(self, datos_pensionado, nombre_estacionamiento):
         """
         Constructor de la clase. Inicializa la ventana y los atributos.
 
         Args:
             datos_pensionado (tuple): Tupla con los datos del pensionado a modificar.
         """
+        self.nombre_estacionamiento = nombre_estacionamiento
         self.query = Pensionados()
         self.datos_pensionado = datos_pensionado
 
@@ -31,7 +33,7 @@ class View_modificar_pensionados():
         # Se elimina la funcionalidad del botón de cerrar
         self.panel_crud.protocol("WM_DELETE_WINDOW", lambda: self.desconectar())
 
-        self.panel_crud.title(f'Modificar pensionado')
+        self.panel_crud.title(f'Modificar pensionado . {self.nombre_estacionamiento}')
 
         # Configura la columna principal del panel para que use todo el espacio disponible
         self.panel_crud.columnconfigure(0, weight=1)
@@ -242,11 +244,32 @@ class View_modificar_pensionados():
         boton_modificar_pensionado.grid(row=0, column=1, padx=5, pady=5)
 
     def generar_QR_pensionado(self):
-        QR = f"Pension-{self.variable_numero_tarjeta.get()}"
+        QR = f"Pension-{self.nombre_estacionamiento}-{self.variable_numero_tarjeta.get()}"
+
         name_image = f"{QR}_{self.variable_placas.get()}_{self.variable_nombre.get()}.png".replace(' ', '_')
-        path = filedialog.asksaveasfilename(defaultextension='.png', initialfile=name_image)
-        if path != '':
-            self.generar_QR(QR_info=QR, path=path, zise = (600, 600))
+        path = f"../QR_pensiones/{name_image}"
+
+        self.generar_QR(QR_info=QR, path=path, zise=(600, 600))
+
+        qr_pension = 'QR_pension.png'
+        self.generar_QR(QR_info=QR, path=qr_pension)
+
+        # Instanciar el objeto Usb para imprimir el resultado
+        printer = Usb(0x04b8, 0x0e15, 0)
+
+        # Alinea al centro el texto
+        printer.set(align = "center")
+        printer.text("QR para activar pension\n")
+        # Imprimir separadores y mensaje de resultado en la consola
+        printer.text("-" * 30 + "\n")
+        printer.image(qr_pension)
+        print("imprime QR")
+        printer.text("-" * 30 + "\n")
+        printer.text(f"Placas: {self.variable_placas.get()}\n")
+        printer.text(f"Nombre: {self.variable_nombre.get()}\n")
+        printer.text(f"ID: {QR}\n")
+        printer.cut()
+        printer.close()
 
     def desactivar_tarjeta(self):
         """ Desactiva temporal o permanentemente la tarjeta del pensionado."""

@@ -48,6 +48,9 @@ font_entrada_negritas = ('Arial', 20, 'bold')
 font_mensaje = ('Arial', 40)
 font_reloj = ('Arial', 65)
 
+button_color = "#062546"#"#39acec""#6264d4"
+button_letters_color = "white" 
+
 from controller_email import main
 send_data = False
 
@@ -67,14 +70,12 @@ class FormularioOperacion:
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
 
-        # Calcular las coordenadas para centrar el LabelFrame
-        x = (screen_width - 800) // 2  # Ajusta 800 al ancho deseado de tu LabelFrame
-        y = (screen_height - 600) // 2  # Ajusta 600 al alto deseado de tu LabelFrame
+        # Configura la ventana para que ocupe toda la pantalla
+        self.root.geometry(f"{screen_width}x{screen_height}")
 
         # Colocar el LabelFrame en las coordenadas calculadas
         principal = tk.LabelFrame(self.root)
-        principal.grid(column=0, row=0, padx=2, pady=2, sticky=tk.NSEW)
-        principal.place(x=x, y=10)  # Centrar el LabelFrame
+        principal.pack(expand=True, padx=5, pady=5, anchor='n')
 
         self.cuaderno1 = ttk.Notebook(principal)
         # Asociar el evento <<NotebookTabChanged>> a la función on_tab_changed
@@ -144,7 +145,7 @@ class FormularioOperacion:
         entryMaxId=ttk.Entry(frame_folio, width=12, textvariable=self.MaxId, state="readonly", font=font_entrada)
         entryMaxId.grid(column=1, row=0, padx=2, pady=2, sticky=tk.NW)
 
-        boton_entrada=tk.Button(frame_boton, text="Generar Entrada", width=15, height=3, anchor="center", background="red", font=font_entrada_negritas, command=self.agregarRegistroRFID)
+        boton_entrada=tk.Button(frame_boton, text="Generar Entrada", width=15, height=3, anchor="center", background=button_color, fg=button_letters_color, font=font_entrada_negritas, command=self.agregarRegistroRFID)
         boton_entrada.grid(column=0, row=1, padx=2, pady=2)
         
 
@@ -348,20 +349,20 @@ class FormularioOperacion:
         self.label_botones_boletos_perdido=tk.LabelFrame(self.labelPerdido, text="BOLETO DAÑADO/PERDIDO")
         self.label_botones_boletos_perdido.grid(column=0,row=1,padx=2, pady=10, sticky=tk.NW)
 
-        self.boton_boleto_dañado=tk.Button(self.label_botones_boletos_perdido, text="Boleto\nDañado", command=self.BoletoDañado, width=10, height=3, anchor="center", font=("Arial", 10))
+        self.boton_boleto_dañado=tk.Button(self.label_botones_boletos_perdido, text="Boleto\nDañado", background=button_color, fg=button_letters_color, command=self.BoletoDañado, width=10, height=3, anchor="center", font=("Arial", 10))
         self.boton_boleto_dañado.grid(column=0, row=1, sticky=tk.NE, padx=10, pady=5)
 
-        self.boton3=tk.Button(self.label_botones_boletos_perdido, text="Boleto Perdido\nCON FOLIO", command=self.BoletoPerdido_conFolio, width=10, height=3, anchor="center", font=("Arial", 10))
+        self.boton3=tk.Button(self.label_botones_boletos_perdido, text="Boleto Perdido\nCON FOLIO", background=button_color, fg=button_letters_color, command=self.BoletoPerdido_conFolio, width=10, height=3, anchor="center", font=("Arial", 10))
         self.boton3.grid(column=1, row=1, sticky=tk.NE, padx=10, pady=5)
 
-        self.boton3=tk.Button(self.label_botones_boletos_perdido, text="Boleto Perdido\nSIN FOLIO", command=self.BoletoPerdido_sinFolio, width=10, height=3, anchor="center", font=("Arial", 10), state = "disabled")
+        self.boton3=tk.Button(self.label_botones_boletos_perdido, text="Boleto Perdido\nSIN FOLIO", background=button_color, fg=button_letters_color, command=self.BoletoPerdido_sinFolio, width=10, height=3, anchor="center", font=("Arial", 10), state = "disabled")
         self.boton3.grid(column=2, row=1, sticky=tk.NE, padx=10, pady=5)
 
 
         self.labelPerdido2=tk.LabelFrame(self.labelPerdido_principal, text="Boletos sin cobro")
         self.labelPerdido2.grid(column=0,row=1,padx=2, pady=10, sticky=tk.NW)
 
-        self.boton2=tk.Button(self.labelPerdido2, text="B./SIN cobro", command=self.BoletoDentro, width=10, height=2, anchor="center", background="red")
+        self.boton2=tk.Button(self.labelPerdido2, text="B./SIN cobro", command=self.BoletoDentro, width=10, height=2, anchor="center", background=button_color, fg=button_letters_color)
         self.boton2.grid(column=0, row=0)
 
         self.scrolledtxt=st.ScrolledText(self.labelPerdido2, width=28, height=7)
@@ -398,7 +399,7 @@ class FormularioOperacion:
         #botones
 
 
-        self.bcambio=tk.Button(self.labelcuantopagas, text="Cobro", command=self.calcular_cambio, width=10, height=2, anchor="center", background="red")
+        self.bcambio=tk.Button(self.labelcuantopagas, text="Cobro", command=self.calcular_cambio, width=10, height=2, anchor="center", background=button_color, fg=button_letters_color)
         self.bcambio.grid(column=0, row=4)
 
         self.BoletoDentro()
@@ -916,12 +917,13 @@ class FormularioOperacion:
 
         :return: None
         """
+        position_id = len(f"Pension-{nombre_estacionamiento}-")
 
         # Obtiene el número de tarjeta
         numtarjeta = self.folio.get()
 
         # Convierte el número de tarjeta en un entero
-        tarjeta = numtarjeta[8:]
+        tarjeta = int(numtarjeta[position_id:])
 
         # Valida si existe un pensionado con ese número de tarjeta
         respuesta = self.DB.ValidarTarj(tarjeta)
@@ -1060,7 +1062,7 @@ class FormularioOperacion:
         self.AutosEnEstacionamiento=tk.StringVar()
         self.entryAutosEnEstacionamiento=tk.Entry(self.labelframe4, width=5, textvariable=self.AutosEnEstacionamiento, state= "readonly", borderwidth=5)
         self.entryAutosEnEstacionamiento.grid(column=2, row=4)
-        self.boton6=tk.Button(self.labelframe4, text="Consulta Bol-Sensor", command=self.Puertoycontar, width=15, height=1, anchor="center", background="red")
+        self.boton6=tk.Button(self.labelframe4, text="Consulta Bol-Sensor", command=self.Puertoycontar, width=15, height=1, anchor="center", background=button_color, fg=button_letters_color)
         self.boton6.grid(column=1, row=0, padx=1, pady=1)
 
         self.FrmCancelado=tk.LabelFrame(self.pagina3, text="Boleto Cancelado")
@@ -1078,7 +1080,7 @@ class FormularioOperacion:
         self.label6=tk.Label(self.labelframe3, text="Fecha y hora del CORTE")
         self.label6.grid(column=0, row=2, padx=1, pady=1)
 
-        self.boton7=tk.Button(self.FrmCancelado, text="B./SIN cobro", command=self.BoletoDentro2, width=12, height=2, anchor="center", background="red")
+        self.boton7=tk.Button(self.FrmCancelado, text="B./SIN cobro", command=self.BoletoDentro2, width=12, height=2, anchor="center", background=button_color, fg=button_letters_color)
         self.boton7.grid(column=0, row=0, padx=1, pady=1)
 
         self.lblCancelado=tk.Label(self.FrmCancelado, text="COLOCAR FOLIO")
@@ -1092,7 +1094,7 @@ class FormularioOperacion:
         self.entryFOLIOCancelado=tk.Entry(frame_folio_cancelado, width=15, textvariable=self.FolioCancelado)
         self.entryFOLIOCancelado.grid(column=0, row=0)
 
-        self.btnCancelado=tk.Button(frame_folio_cancelado, text="Cancelar Boleto ", command=self.BoletoCancelado, width=12, height=1, anchor="center", background="red")
+        self.btnCancelado=tk.Button(frame_folio_cancelado, text="Cancelar Boleto ", command=self.BoletoCancelado, width=12, height=1, anchor="center", background=button_color, fg=button_letters_color)
         self.btnCancelado.grid(column=1, row=0)
         self.scrolledtxt2=st.ScrolledText(self.FrmCancelado, width=26, height=7)
         self.scrolledtxt2.grid(column=1,row=0, padx=1, pady=1)
@@ -1120,12 +1122,12 @@ class FormularioOperacion:
         self.boton2=ttk.Button(frame_botones_entrada, text="Entradas sin corte", command=self.listar1)
         self.boton2.grid(column=1, row=0, padx=4, pady=4)
 
-        self.boton3=tk.Button(self.labelframe2, text="Calcular Corte", command=self.Calcular_Corte, width=15, height=1, background="red")
+        self.boton3=tk.Button(self.labelframe2, text="Calcular Corte", command=self.Calcular_Corte, width=15, height=1, background=button_color, fg=button_letters_color)
         self.boton3.grid(column=2, row=1, padx=4, pady=4)
-        self.boton4=tk.Button(self.labelframe2, text="Generar Corte", command=self.Guardar_Corte, width=15, height=1, anchor="center", background="red")
+        self.boton4=tk.Button(self.labelframe2, text="Generar Corte", command=self.Guardar_Corte, width=15, height=1, anchor="center", background=button_color, fg=button_letters_color)
 
         self.boton4.grid(column=2, row=3, padx=4, pady=4)
-        self.boton5=tk.Button(self.labelframe3, text="Imprimir salidas\nCorte", command=self.desglose_cobrados, width=15, height=3, anchor="center")
+        self.boton5=tk.Button(self.labelframe3, text="Imprimir salidas\nCorte", background=button_color, fg=button_letters_color, command=self.desglose_cobrados, width=15, height=3, anchor="center")
         self.boton5.grid(column=1, row=2, padx=4, pady=4)
         self.scrolledtext1=st.ScrolledText(self.labelframe1, width=28, height=4)
         self.scrolledtext1.grid(column=0,row=1, padx=1, pady=1)
@@ -1143,7 +1145,7 @@ class FormularioOperacion:
         self.AnoCorte.set(Ano)
         self.entryAnoCorte=tk.Entry(self.labelframe5, width=7, textvariable=self.AnoCorte, justify=tk.RIGHT)
         self.entryAnoCorte.grid(column=1, row=2)
-        self.boton6=tk.Button(self.labelframe5, text="Reporte de Corte", command=self.Reporte_Corte, width=15, height=1, anchor="center", background="red")
+        self.boton6=tk.Button(self.labelframe5, text="Reporte de Corte", command=self.Reporte_Corte, width=15, height=1, anchor="center", background=button_color, fg=button_letters_color)
         self.boton6.grid(column=3, row=2, padx=4, pady=4)       
 
 
@@ -1156,7 +1158,7 @@ class FormularioOperacion:
                 View_Login(),
                 self.activar()
                 },
-        width=15, height=1, anchor="center", background="red")
+        width=15, height=1, anchor="center", background=button_color, fg=button_letters_color)
         self.boton_usuarios.grid(column=0, row=0, padx=4, pady=4)
 
         self.BoletoDentro2()
@@ -1735,7 +1737,7 @@ class FormularioOperacion:
         self.caja_texto_numero_tarjeta=ttk.Entry(labelframe_pensionados_datos_pago__, width=15, textvariable=self.variable_numero_tarjeta)
         self.caja_texto_numero_tarjeta.grid(column=1, row=0, padx=4, pady=4)
 
-        boton_consultar_pensionado=tk.Button(labelframe_pensionados_datos_pago__, text="Consultar", command=self.ConsulPagoPen, width=12, height=1, anchor="center",  font=("Arial", 10), background="red")
+        boton_consultar_pensionado=tk.Button(labelframe_pensionados_datos_pago__, text="Consultar", command=self.ConsulPagoPen, width=12, height=1, anchor="center",  font=("Arial", 10), background=button_color, fg=button_letters_color)
         boton_consultar_pensionado.grid(column=4, row=0, padx=4, pady=4)     
 
         lbldatos16=tk.Label(labelframe_pensionados_datos_pago__, text="Monto Mensual:")#informativo
@@ -1792,7 +1794,7 @@ class FormularioOperacion:
         checkbox_transferencia.grid(column=0, row=1, padx=0, pady=0, sticky=tk.NW)
 
 
-        boton2=tk.Button(label_frame_tipo_pago, text="Cobrar Pension", command=self.Cobro_Pensionado, width=12, height=1, anchor="center",  font=("Arial", 10), background="red")
+        boton2=tk.Button(label_frame_tipo_pago, text="Cobrar Pension", command=self.Cobro_Pensionado, width=12, height=1, anchor="center",  font=("Arial", 10), background=button_color, fg=button_letters_color)
         boton2.grid(column=0, row=3, padx=4, pady=4)
 
         self.etiqueta_informacion_pago = tk.Label(label_frame_tipo_pago, text="", font=("Arial", 11))
@@ -1803,10 +1805,10 @@ class FormularioOperacion:
         labelframe_pensionados_acciones = tk.LabelFrame(labelframe_pensionados, text="Acciones")
         labelframe_pensionados_acciones.grid(column=1, row=0, padx=2, pady=5, sticky=tk.NW)
 
-        self.boton_agregar_pensionado=tk.Button(labelframe_pensionados_acciones, text="Agregar Pensionado", anchor="center", font=("Arial", 12), width=27, command=self.agregar_pensionado)
+        self.boton_agregar_pensionado=tk.Button(labelframe_pensionados_acciones, background=button_color, fg=button_letters_color, text="Agregar Pensionado", anchor="center", font=("Arial", 12), width=27, command=self.agregar_pensionado)
         self.boton_agregar_pensionado.grid(column=0, row=0, padx=2, pady=5, sticky=tk.NW)
      
-        self.boton_modificar_pensionado=tk.Button(labelframe_pensionados_acciones, text="Modificar info Pensionado", anchor="center", command=self.modificar_pensionado, font=("Arial", 12), width=27)
+        self.boton_modificar_pensionado=tk.Button(labelframe_pensionados_acciones, background=button_color, fg=button_letters_color, text="Modificar info Pensionado", anchor="center", command=self.modificar_pensionado, font=("Arial", 12), width=27)
         self.boton_modificar_pensionado.grid(column=0, row=1, padx=2, pady=5, sticky=tk.NW)
 
         labelframe_pensionados_acciones_contraseña = ttk.Frame(labelframe_pensionados_acciones)
@@ -1829,7 +1831,7 @@ class FormularioOperacion:
         self.lbldatosTotPen=tk.Label(labelframe_pensionados_dentro, text="")
         self.lbldatosTotPen.grid(column=0, row=0, padx=4, pady=4)        
 
-        boton5=tk.Button(labelframe_pensionados_dentro, text="Actualizar", command=self.PenAdentro, width=28, height=1, anchor="center", font=("Arial", 10), background="red")
+        boton5=tk.Button(labelframe_pensionados_dentro, text="Actualizar", command=self.PenAdentro, width=28, height=1, anchor="center", font=("Arial", 10), background=button_color, fg=button_letters_color)
         boton5.grid(column=0, row=1, padx=4, pady=4)
 
         self.scroll_pensionados_dentro = st.ScrolledText(labelframe_pensionados_dentro, width=28, height=10)
@@ -1908,8 +1910,13 @@ class FormularioOperacion:
             self.limpiar_datos_pago()
             return
 
-        numtarjeta = int(numtarjeta[8:])
+        position_id = len(f"Pension-{nombre_estacionamiento}-")
+
+        # Convierte el número de tarjeta en un entero
+        numtarjeta = int(numtarjeta[position_id:])
+
         resultado = self.DB.ValidarRFID(numtarjeta)
+
 
         if not resultado:
             mb.showwarning("IMPORTANTE", "No existe Cliente para ese Num de Tarjeta")
@@ -2482,7 +2489,7 @@ class FormularioOperacion:
 
         self.variable_contraseña_pensionados.set("")
         self.variable_numero_tarjeta.set("")
-        View_agregar_pensionados()
+        View_agregar_pensionados(nombre_estacionamiento)
 
         self.limpiar_datos_pago()
         self.ver_pensionados()
@@ -2532,7 +2539,7 @@ class FormularioOperacion:
 
         self.variable_contraseña_pensionados.set("")
         self.variable_numero_tarjeta.set("")
-        View_modificar_pensionados(datos_pensionado = resultado)
+        View_modificar_pensionados(datos_pensionado = resultado, nombre_estacionamiento=nombre_estacionamiento)
         self.limpiar_datos_pago()
         self.ver_pensionados()
         self.activar_botones()
@@ -2579,8 +2586,9 @@ class FormularioOperacion:
 
     def Pensionados(self, event):
         try:
+            position_id = len(f"Pension-{nombre_estacionamiento}-")
             numtarjeta = self.Placa.get()
-            ID_pen = int(numtarjeta[8:])
+            ID_pen = int(numtarjeta[position_id:])
 
             print(ID_pen)
             Existe = self.DB.ValidarPen(ID_pen)
@@ -2645,7 +2653,7 @@ class FormularioOperacion:
             self.ver_pensionados()
             self.PenAdentro()
             #Generar QR
-            QR_pension = f"Pension-{ID_pen}"
+            QR_pension = numtarjeta
             self.DB.generar_QR(QR_pension)
             print(f"QR pension: {QR_pension}")
             printer = Usb(0x04b8, 0x0e15, 0)
@@ -2659,10 +2667,9 @@ class FormularioOperacion:
             printer.text(f'Nombre: {Nom_cliente} {Apell1_cliente} {Apell2_cliente}\n')
             printer.text(f'Hora de entrada: {hoy}\n')
             printer.text(f'Placas: {Placas}\n')
-            printer.text(f'Vigencia: {VigAct}\n')
+            printer.text(f'Vigencia: {VigAct}\n\n')
 
             printer.set(align = "center")
-            printer.image(AutoA)
             printer.image(qr_imagen)
 
             printer.cut()

@@ -11,8 +11,9 @@ import traceback
 
 class View_agregar_pensionados:
     """Clase de la vista para agregar pensionados."""
-    def __init__(self):
+    def __init__(self, nombre_estacionamiento:str):
         """Inicializa una instancia de la clase ViewAgregarPensionados y crea la ventana principal de la interfaz."""
+        self.nombre_estacionamiento = nombre_estacionamiento
         self.query = Pensionados()
 
         # Crea la ventana principal
@@ -21,7 +22,7 @@ class View_agregar_pensionados:
         # Se elimina la funcionalidad del botón de cerrar
         self.panel_crud.protocol("WM_DELETE_WINDOW", lambda: self.desconectar())
 
-        self.panel_crud.title(f'Agregar pensionado')
+        self.panel_crud.title(f'Agregar pensionado - {self.nombre_estacionamiento}')
 
         # Configura la columna principal del panel para que use todo el espacio disponible
         self.panel_crud.columnconfigure(0, weight=1)
@@ -203,10 +204,13 @@ class View_agregar_pensionados:
         self.campo_numero_tarjeta.focus()
 
     def generar_QR_pensionado(self):
-        QR = f"Pension-{self.variable_numero_tarjeta.get()}"
+        QR = f"Pension-{self.nombre_estacionamiento}-{self.variable_numero_tarjeta.get()}"
+
         name_image = f"{QR}_{self.variable_placas.get()}_{self.variable_nombre.get()}.png".replace(' ', '_')
-        path = "./QR_pensiones/"
+        path = f"../QR_pensiones/{name_image}"
+
         self.generar_QR(QR_info=QR, path=path, zise=(600, 600))
+
         qr_pension = 'QR_pension.png'
         self.generar_QR(QR_info=QR, path=qr_pension)
 
@@ -221,8 +225,9 @@ class View_agregar_pensionados:
         printer.image(qr_pension)
         print("imprime QR")
         printer.text("-" * 30 + "\n")
-        printer.text(f"{self.variable_placas.get()}\n")
-        printer.text(f"{self.variable_nombre.get()}\n")
+        printer.text(f"Placas: {self.variable_placas.get()}\n")
+        printer.text(f"Nombre: {self.variable_nombre.get()}\n")
+        printer.text(f"ID: {QR}\n")
         printer.cut()
         printer.close()
 
