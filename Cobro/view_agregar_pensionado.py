@@ -1,4 +1,3 @@
-from tkinter import filedialog
 import qrcode
 from escpos.printer import Usb, USBNotFoundError
 
@@ -206,7 +205,7 @@ class View_agregar_pensionados:
     def generar_QR_pensionado(self):
         QR = f"Pension-{self.variable_numero_tarjeta.get()}"
         name_image = f"{QR}_{self.variable_placas.get()}_{self.variable_nombre.get()}.png".replace(' ', '_')
-        path = filedialog.asksaveasfilename(defaultextension='.png', initialfile=name_image, title="Seleccione ubicacion para guardar el QR del pensionado.")
+        path = "./QR_pensiones/"
         self.generar_QR(QR_info=QR, path=path, zise=(600, 600))
         qr_pension = 'QR_pension.png'
         self.generar_QR(QR_info=QR, path=qr_pension)
@@ -216,13 +215,14 @@ class View_agregar_pensionados:
 
         # Alinea al centro el texto
         printer.set(align = "center")
-        printer.text("QR para activar pension")
+        printer.text("QR para activar pension\n")
         # Imprimir separadores y mensaje de resultado en la consola
         printer.text("-" * 30 + "\n")
         printer.image(qr_pension)
         print("imprime QR")
         printer.text("-" * 30 + "\n")
-        printer.text("QR\n")
+        printer.text(f"{self.variable_placas.get()}\n")
+        printer.text(f"{self.variable_nombre.get()}\n")
         printer.cut()
         printer.close()
 
