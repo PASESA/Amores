@@ -26,7 +26,7 @@ import math
 import atexit
 
 ###--###
-data_printer = (0x04b8, 0x0e15, 0)
+data_rinter = (0x04b8, 0x0e15, 0)
 
 contraseña_pensionados = "P4s3"
 
@@ -766,8 +766,6 @@ class FormularioOperacion:
 
             printer.text(f'Folio boleto cancelado: {Folio}\n')
             hoy = datetime.today().strftime("%b-%d-%A-%Y %H:%M:%S")
-            printer.set('Big line\n', font='b')
-            printer.text(f'Fecha: {hoy[:-3]}\n')
             printer.text(f'El auto entro: {Entrada}\n')
             printer.text(f'El auto salio: {Salida}\n')
         else:
@@ -1288,6 +1286,7 @@ class FormularioOperacion:
             printer.text(str(fila[3]))
             printer.text('\n')
         else:
+            print("-")
             printer.cut()
             printer.close()
 
@@ -1469,18 +1468,18 @@ class FormularioOperacion:
 
         Quedados = 0 if quedados_totales < 0 else quedados_totales
 
-        # if Entradas_Totales_Pensionados > 0 or Salidas_Pensionados > 0 or Quedados_Pensionados > 0:
+        if Entradas_Totales_Pensionados > 0 or Salidas_Pensionados > 0 or Quedados_Pensionados > 0:
 
-        printer.set(align="center")
-        printer.text("Entradas de pensionados\n\n")
-        printer.set(align="left")
+            printer.set(align="center")
+            printer.text("Entradas de pensionados\n\n")
+            printer.set(align="left")
 
-        printer.text(f"Anteriores: {Anteriores_Pensionados}\n")
-        printer.text(f"Entradas: {Entradas_Totales_Pensionados}\n")
-        printer.text(f"Salidas: {Salidas_Pensionados}\n")
-        printer.text(f"Quedados: {Quedados}\n")
+            printer.text(f"Anteriores: {Anteriores_Pensionados}\n")
+            printer.text(f"Entradas: {Entradas_Totales_Pensionados}\n")
+            printer.text(f"Salidas: {Salidas_Pensionados}\n")
+            printer.text(f"Quedados: {Quedados}\n")
 
-        printer.text("----------------------------------\n\n")
+            printer.text("----------------------------------\n\n")
 
 
         # Obtiene la cantidad de boletos perdidos generados
@@ -2041,7 +2040,11 @@ class FormularioOperacion:
                 self.caja_texto_numero_tarjeta.focus()
                 return
 
-            tarjeta = int(numtarjeta[8:])
+            position_id = len(f"Pension-{nombre_estacionamiento}-")
+
+            # Convierte el número de tarjeta en un entero
+            tarjeta = int(numtarjeta[position_id:])
+
             Existe = self.DB.ValidarRFID(tarjeta)[0][0]
 
             if not Existe:
@@ -2514,6 +2517,11 @@ class FormularioOperacion:
             self.activar_botones()
             return
 
+        position_id = len(f"Pension-{nombre_estacionamiento}-")
+
+        # Convierte el número de tarjeta en un entero
+        tarjeta = int(numero_tarjeta[position_id:])
+
         if len(contraseña) == 0:
             mb.showwarning("Error", "Ingrese la contraseña para agregar un pensionado")
             self.variable_contraseña_pensionados.set("")
@@ -2528,7 +2536,7 @@ class FormularioOperacion:
             self.activar_botones()
             return
 
-        resultado = self.controlador_crud_pensionados.consultar_pensionado(numero_tarjeta)
+        resultado = self.controlador_crud_pensionados.consultar_pensionado(tarjeta)
 
         if len(resultado) == 0:
             mb.showerror("Error", "No está registrado un pensionado con dicho número de tarjeta")
